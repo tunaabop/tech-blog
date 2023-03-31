@@ -1,0 +1,38 @@
+.home-header {
+    padding-left: 25px;
+    color: #5C4033;
+  }
+  header {
+    background-color: #3EB489;
+    color: #ccc;
+  }
+  .nav-a {
+    color: #5C4033;
+  }
+  .header-h1 {
+    text-align: left;
+  }
+  .btn {
+    background-color: #ccc;
+    color: #5C4033;
+  }
+  
+  header,
+  .post:not(:last-child) {
+    border-bottom: 2px solid #5C4033;
+  }
+  
+  .no-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #5C4033;
+    text-decoration: none;
+    font-size: 100%;
+  }
+  
+  .no-button:hover {
+    color: red;
+    text-decoration: underline;
+  }
