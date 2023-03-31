@@ -1,31 +1,74 @@
 const router = require('express').Router();
-const { User } = require('../models');
-
-// use withAuth middleware to redirect from protected routes.
-// const withAuth = require("../util/withAuth");
-
-// example of a protected route
-// router.get("/users-only", withAuth, (req, res) => {
-//   // ...
-// });
+const { Post, User, Comment } = require('../models');
+const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
-    let user;
-    if (req.session.isLoggedIn) {
-      user = await User.findByPk(req.session.userId, {
-        exclude: ['password'],
-        raw: true,
-      });
-    }
-    res.render('home', {
-      title: 'Home Page',
-      isLoggedIn: req.session.isLoggedIn,
-      user,
+    // get all posts
+    const postData = await Post.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['title'],
+        },
+      ],
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('⛔ Uh oh! An unexpected error occurred.');
+
+    // serialize data so the template can read it
+    const posts = postData.map((post) => post.get({ plain: true }));
+
+    // render serialized data & sessionflag onto template
+    res.render('homepage', { 
+      projects, 
+      logged_in: req.session.logged_in 
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/post/:post_id', async (req, res) => {
+  try {
+    const postData = await Project.findByPk(req.params.post_id, {
+      include: [
+        {
+          model: User,
+          attributes: ['title'],
+        },
+      ],
+    });
+
+    const post = postData.get({ plain: true });
+
+    res.render('post', {
+      ...post,
+      logged_in: req.session.logged_in
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// use withAuth middleware to
+// prevent the access to our route
+router.get('/profile', withAuth, async (req, res) => {
+  try {
+    // find user by session ID
+    const userData = await User.findByPk(req.session.user_id, {
+      attributes: { 
+        exclude: ['password'] 
+      },
+      include: [{ 
+        model: Post 
+      }],
+    });
+    const user = userData.get({ plain: true });
+    res.render('profile', {
+      ...user,
+      logged_in: true
+    });
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
