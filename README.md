@@ -41,7 +41,7 @@ You can add your own custom helper functions by exporting them from [util/helper
 
 ## Deploy to Heroku
 
-Deployment Link: 
+Deployment Link: (https://tech-blog-0331.herokuapp.com/)[https://tech-blog-0331.herokuapp.com/]
 
 ### Prerequisites
 
